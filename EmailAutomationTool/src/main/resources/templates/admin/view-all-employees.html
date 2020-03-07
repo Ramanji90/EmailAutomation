@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:insert="fragments.html :: headerfiles"></head>
+<head>
+<title>View All Users</title>
+<style type="text/css"> 
+.navbar{background-color:#11d00a;}
+ul li a{color:white;}
+#container2{padding-left:0px;padding-right:0px;margin-top:5px;}
+#first{background-color:rgb(0, 123, 255);color:white;}
+.btn{width:70px;height:35px;margin-top:-5px;}
+</style>
+</head>
+<body>
+<header th:insert="fragments.html :: nav"></header>
+
+<!-- Fragment #3 : Navbar contains nav links -->
+	<div th:fragment="menu">
+		<nav sec:authorize="hasRole('ROLE_ADMIN')" class="navbar navbar-expand-lg">
+
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+					<a class="nav-link active" href="#"
+						th:href="@{~/admin/autocreation}">Auto Creation</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/export}">Export</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/import}">Import</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/merge}">Merge</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/assign/records}">Assign Records</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/view/all/records}">View Assigned Records</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/add/employee}">Add Employee</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/view/all/users}">View Employees</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/report}">Report</a>
+					</li>
+					
+				</ul>
+			</div>
+		</nav>
+	</div>
+
+<!-- Page content goes here -->
+<div class="container-fluid" id="container2"> 
+<table class="table text-center table-bordered table-striped">
+<tr id="first">
+<th>Sr.No</th>
+<th>First Name</th>
+<th>Last Name</th>
+<th>Full Name</th>
+<th>Joining Date</th>
+<th>Email</th>
+<th>Roles</th>
+<th>Permissions</th>
+<th>Action</th>
+</tr>
+<tbody id="data">
+<tr th:if="${#lists.isEmpty(list)}"><td colspan="8" style="color:red;font-weight: bolder;font-size:27px;">No Records Found </td></tr>
+<tr th:each="user,iStat : ${list}">
+<td th:text="${iStat.count}"></td>
+
+<td><span th:text="${user.getUsername()}"></span></td>
+<td><span th:text="${user.getLastName()}"></span></td>
+<td><span th:text="${user.getFullName()}"></span></td>
+<td><span th:text="${user.getJoiningDate()}"></span></td>
+<td><span th:text="${user.getEmail()}"></span></td>
+<td><span th:text="${user.getRoles()}"></span></td>
+<td><span th:text="${user.getPermissions()}"></span></td>
+<td><a href="" class="btn btn-success">Edit</a> <a href="" class="btn btn-danger">Delete</a></td>
+</tr>
+</tbody>
+<tr id="last">
+</tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+</table>
+</div>
+</body>
+</html>

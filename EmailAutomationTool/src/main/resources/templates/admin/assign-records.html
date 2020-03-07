@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:insert="fragments.html :: headerfiles"></head>
+<head>
+<title>Assign Records</title>
+<style type="text/css"> 
+.navbar{background-color:#11d00a;}
+ul li a{color:white;}
+.btn{height:33px;padding-top:3px;}
+.table-striped tbody tr:nth-of-type(odd) {background-color: rgba(175, 212, 9, 0.98);}
+.table-striped tbody tr:nth-of-type(even) {background-color: rgb(6, 208, 83);}
+#first{background-color:rgb(0, 123, 255);color:white;}
+</style>
+<script src="/js/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+<header th:insert="fragments.html :: nav"></header>
+
+<!-- Fragment #3 : Navbar contains nav links -->
+	<div th:fragment="menu">
+		<nav sec:authorize="hasRole('ROLE_ADMIN')" class="navbar navbar-expand-lg">
+
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+					<a class="nav-link active" href="#"
+						th:href="@{~/admin/autocreation}">Auto Creation</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/export}">Export</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/import}">Import</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/merge}">Merge</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/assign/records}">Assign Records</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/view/all/records}">View Assigned Records</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/add/employee}">Add Employee</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/view/all/users}">View Employees</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/report}">Report</a>
+					</li>
+					
+				</ul>
+			</div>
+		</nav>
+	</div>
+
+<!-- Page content goes here -->
+<div class="container-fluid">
+   <form action="/admin/assignrecords" method="get" >
+   <table class="table">
+   <tr>
+   <td><strong>Select City :</strong></td>
+   <td><select name="location" id="location">
+   <option>Select City</option>
+   </select></td>
+   <td><strong>No.Records :</strong></td>
+   <td><input type="text" name="limit" placeholder="No of Records"></td>
+   <td><input type="submit" value="Search" class="btn btn-primary"></td>
+   <td><strong>Bulk:</strong></td>
+   <td><input type="checkbox" name="bulk" id="bulk" value="bulk"></td>
+   <td><strong>Total Records:</strong></td>
+   <td><strong>1000</strong></td>
+   </tr>
+   </table>
+   </form>
+   
+<form id="assign-form" method="post">
+<table class="table text-center table-bordered table-striped">
+<tr id="first">
+<th>Sr.No</th>
+<th>Select</th>
+<th>Date</th>
+<th>Company</th>
+<th>Contact Name</th>
+<th>Designation</th>
+<th>Location</th>
+<th>Industry</th>
+</tr>
+<tbody id="data">
+<tr th:if="${list ==null}"><td colspan="8" style="color:red;font-weight: bolder;font-size:27px;">No Records Found </td></tr>
+<tr th:each="innet,iStat : ${list}">
+<td th:text="${iStat.count}"></td>
+<td><input type="checkbox" checked="checked"  name="innetid" id="checkbox" th:value="${innet.id}"></td>
+<td><span th:text="${innet.getDate()}"></span></td>
+<td><span th:text="${innet.company}"></span></td>
+<td><span th:text="${innet.contactName}"></span></td>
+<td><span th:text="${innet.designation}"></span></td>
+<td><span th:text="${innet.location}"></span></td>
+<td><span th:text="${innet.industry}"></span></td>
+</tr>
+</tbody>
+<tr>
+<td></td>
+<td colspan="3"><strong>Select User</strong>
+<select name="user" id="user">
+<option>Select User</option>
+</select></td>
+<td colspan="1"><input type="submit" name="assign" value="Assign" class="btn btn-primary"> <input type="reset" value="Reset" class="btn btn-danger"></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+</table>
+</form>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$.ajax({
+		  type:"GET",
+		  url:"/admin/loadallcities",
+		  success:function(data){
+			 // console.log(data.length);
+			  $.each(data,function(i,city){
+				  $('#location').append("<option>"+city+"</option>");
+			  });
+		  },
+		  error:function(err)
+		  {
+			  
+		  }
+	});
+	
+	$.ajax({
+		  type:"GET",
+		  url:"/admin/fetch/all/users",
+		  success:function(data){
+			  //console.log(data.length);
+			  $.each(data,function(i,user){
+				  $('#user').append("<option>"+user+"</option>");
+			  });
+		  },
+		  error:function(err)
+		  {
+			  
+		  }
+	});
+	
+	
+	$("#assign-form").submit(function(event){
+        // alert(event.target.name);
+         var ids = [];
+         $.each($("input[name='innetid']:checked"), function(){
+             ids.push($(this).val());
+             
+             
+         });
+        
+         var data1={ids:ids,user:$('#user').val()};
+         var json=JSON.stringify(data1);
+        // console.log(ids.join(", "));
+        console.log(json);
+         
+         $.ajax({
+         	
+         	    type:'POST',
+         	    accept:'application/json',
+         	    contentType:'application/json;charset=UTF-8',
+         	    data:json,
+         	    dataType:'json',
+         	    url:'/admin/update/assign/records',
+         	    success:function(data)
+         	    {
+         	    	alert("Records Assigned to User");
+         	    	
+         	    	$('#data').empty();
+         	    	$('#data').append("<tr><td colspan='8' id='nodata' style='color:red;font-weight:bolder;font-size:27px'>No Records Found</td></tr>");
+         	    },
+         	    error:function(error)
+         	    {
+         	    	alert("error");
+         	    }
+               });
+         
+     });
+});
+
+</script>
+</body>
+</html>

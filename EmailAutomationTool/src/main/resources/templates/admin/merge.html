@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:insert="fragments.html :: headerfiles"></head>
+<head>
+<title>Merge Panel</title>
+<style type="text/css"> 
+.navbar{background-color:#11d00a;}
+ul li a{color:white;}
+</style>
+</head>
+<body>
+<header th:insert="fragments.html :: nav"></header>
+
+<!-- Fragment #3 : Navbar contains nav links -->
+	<div th:fragment="menu">
+		<nav sec:authorize="hasRole('ROLE_ADMIN')" class="navbar navbar-expand-lg">
+
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+					<a class="nav-link active" href="#"
+						th:href="@{~/admin/autocreation}">Auto Creation</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/export}">Export</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/import}">Import</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/merge}">Merge</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/assign/records}">Assign Records</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/view/all/records}">View Assigned Records</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/add/employee}">Add Employee</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/view/all/users}">View Employees</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/report}">Report</a>
+					</li>
+					
+				</ul>
+			</div>
+		</nav>
+	</div>
+
+<!-- Page content goes here -->
+<div class="container my-5" sec:authorize="hasRole('ROLE_ADMIN')">
+<div class="row">
+<div class="col-sm-6">
+    <form action="/admin/merge" method="post" enctype="multipart/form-data" style="border:1px solid #96ff00;height:264px;">
+    <table class="table table-striped">
+    <tr>
+    <td><strong>Select File</strong></td>
+    <td>:</td>
+    <td><input type="file" id="file" name="file" required="required"></td>
+    </tr>
+    <tr>
+    <td><strong>Select Course</strong></td>
+    <td>:</td>
+    <td><select></select></td>
+    </tr>
+    <tr>
+    <td><strong>Select City</strong></td>
+    <td>:</td>
+    <td><select></select></td>
+    </tr>
+    <tr>
+    <td></td>
+    <td></td>
+    <td><input type="submit" id="submit" name="submit" value="Start"></td>
+    </tr>
+    </table>
+    </form>
+    </div>
+    
+    <div class="col-sm-6 text-center" >
+    <div th:if="${message}" style="border:1px solid #a4ff05;">
+    <h4 style="color:white;background-color:#43d003;height:40px;padding-top:4px;">Merge Report</h4>
+		<table class="table table-striped">
+		<tr style="color:#789c09;">
+		<td><strong>File Status</strong></td>
+		<td>:</td>
+		<td><span th:text="${message}"></span></td>
+		</tr>
+		<tr style="color:red;">
+		<td><strong>Duplicates</strong></td>
+		<td>:</td>
+		<td th:text="${report.getDuplicates()}"></td>
+		</tr>
+		<tr style="color:blue;">
+		<td><strong>Insertions</strong></td>
+		<td>:</td>
+		<td th:text="${report.getInsertions()}"></td>
+		</tr>
+		</table>
+	</div>
+    </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:insert="fragments.html :: headerfiles"></head>
+<head>
+<title>Export Panel</title>
+<style type="text/css"> 
+.navbar{background-color:#11d00a;}
+ul li a{color:white;}
+</style>
+<script src="/js/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+<header th:insert="fragments.html :: nav"></header>
+
+<!-- Fragment #3 : Navbar contains nav links -->
+	<div th:fragment="menu">
+		<nav sec:authorize="hasRole('ROLE_ADMIN')" class="navbar navbar-expand-lg">
+
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+					<a class="nav-link active" href="#"
+						th:href="@{~/admin/autocreation}">Auto Creation</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/export}">Export</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/import}">Import</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/merge}">Merge</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/assign/records}">Assign Records</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/view/all/records}">View Assigned Records</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/add/employee}">Add Employee</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/view/all/users}">View Employees</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/report}">Report</a>
+					</li>
+					
+				</ul>
+			</div>
+		</nav>
+	</div>
+
+<!-- Page content goes here -->
+<div class="container my-5" sec:authorize="hasRole('ROLE_ADMIN')">
+<div class="row">
+<div class="col-sm-6">
+    <form action="/admin/exportdata" method="get" enctype="multipart/form-data" style="border:1px solid #96ff00;height:264px;">
+    <table class="table table-striped">
+    <tr>
+    <td><strong>Select City</strong></td>
+    <td>:</td>
+    <td><select name="location" id="location"><option>Select City</option></select></td>
+    </tr>
+    <tr>
+    <td><strong>From Date</strong></td>
+    <td>:</td>
+    <td><input  type="text" name="fromDate" id="fromDate"></td>
+    </tr>
+    <tr>
+    <td><strong>To Date</strong></td>
+    <td>:</td>
+    <td><input  type="text" name="toDate" id="toDate"></td>
+    </tr>
+    <tr>
+    <td></td>
+    <td></td>
+    <td><input type="submit" id="export" name="export" value="Export"></td>
+    </tr>
+    </table>
+    </form>
+    </div>
+    
+    <div class="col-sm-6 text-center" >
+    <div th:if="${message}" style="border:1px solid #a4ff05;">
+    <h4 style="color:white;background-color:#43d003;height:40px;padding-top:4px;">Export Status</h4>
+		<table class="table table-striped">
+		<tr style="color:green;">
+		<td><strong>Export Status</strong></td>
+		<td>:</td>
+		<td><span th:text="${message}"></span></td>
+		</tr>
+		
+		</table>
+	</div>
+    </div>
+    </div>
+</div>
+
+<script src="/js/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$.ajax({
+		  type:"GET",
+		  url:"/admin/loadallcities",
+		  success:function(data){
+			  console.log(data.length);
+			  $.each(data,function(i,city){
+				  $('#location').append("<option>"+city+"</option>");
+			  });
+		  },
+		  error:function(err)
+		  {
+			  
+		  }
+	});
+	var date=new Date().toLocaleDateString();
+	var stringArry=date.split("/");
+	var month;
+	var day;
+	if(stringArry[0]<=9)
+		{
+		   month="0"+stringArry[0];
+		}
+	else
+	    {
+		   month=stringArry[0];
+	    }
+	if(stringArry[1]<=9)
+	  {
+		  day="0"+stringArry[1];
+	  }
+	else
+		{
+		  day=stringArry[1];
+		}
+	
+	$('#fromDate').val(stringArry[2]+"-"+month+"-"+day);
+	
+	$('#toDate').val(stringArry[2]+"-"+month+"-"+day);
+});
+
+</script>
+</body>
+
+</html>

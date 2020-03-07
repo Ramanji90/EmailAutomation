@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:insert="fragments.html :: headerfiles"></head>
+<head>
+<title>View All Assigned Records Panel</title>
+<style type="text/css"> 
+.navbar{background-color:#11d00a;}
+ul li a{color:white;}
+#table{width:500px;margin-left:33%}
+#container{background-color:#f1ecec;margin-top:5px;height: 61px;padding: 10px;}
+#View{height:38px;width:100px;}
+#container2{padding-left:0px;padding-right:0px;margin-top:5px;}
+.table-striped tbody tr:nth-of-type(odd) {background-color: rgba(175, 212, 9, 0.98);}
+.table-striped tbody tr:nth-of-type(even) {background-color: rgb(6, 208, 83);}
+#remove{background-color:#e806f1;width:300px;}
+#first{background-color:rgb(0, 123, 255);color:white;}
+#last{background-color:rgb(0, 123, 255);color:white;}
+</style>
+<script src="/js/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+<header th:insert="fragments.html :: nav"></header>
+
+<!-- Fragment #3 : Navbar contains nav links -->
+	<div th:fragment="menu">
+		<nav sec:authorize="hasRole('ROLE_ADMIN')" class="navbar navbar-expand-lg">
+
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+					<a class="nav-link active" href="#"
+						th:href="@{~/admin/autocreation}">Auto Creation</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/export}">Export</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/import}">Import</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/merge}">Merge</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/assign/records}">Assign Records</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/view/all/records}">View Assigned Records</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/add/employee}">Add Employee</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/view/all/users}">View Employees</a>
+					</li>
+					<li class="nav-item"><a class="nav-link active" href="#"
+						th:href="@{~/admin/report}">Report</a>
+					</li>
+					
+				</ul>
+			</div>
+		</nav>
+	</div>
+
+<!-- Page content goes here -->
+<div class="container-fluid" id="container">
+    <form action="/admin/view/all/assigned/records" method="get">
+    <table id="table">
+    <tr>
+    <td><strong>Select User : </strong></td>
+    <td><select id="user" name="user" required="required">
+    <option>Select User</option>
+    </select></td>
+    <td><input type="submit" id="View" value="View" class="btn btn-primary"></td>
+    </tr>
+    </table>
+    </form>
+   </div>
+   
+   
+<div class="container-fluid" id="container2"> 
+<form id="assign-form" method="post">
+<table class="table text-center table-bordered table-striped">
+<tr id="first">
+<th>Sr.No</th>
+<th>Select</th>
+<th>Date</th>
+<th>Company</th>
+<th>Contact Name</th>
+<th>Designation</th>
+<th>Location</th>
+<th>Industry</th>
+</tr>
+<tbody id="data">
+<tr th:if="${#lists.isEmpty(list)}"><td colspan="8" style="color:red;font-weight: bolder;font-size:27px;">No Records Found </td></tr>
+<tr th:each="innet,iStat : ${list}">
+<td th:text="${iStat.count}"></td>
+<td><input type="checkbox" checked="checked"  name="innetid" id="checkbox" th:value="${innet.id}"></td>
+<td><span th:text="${innet.getDate()}"></span></td>
+<td><span th:text="${innet.company}"></span></td>
+<td><span th:text="${innet.contactName}"></span></td>
+<td><span th:text="${innet.designation}"></span></td>
+<td><span th:text="${innet.location}"></span></td>
+<td><span th:text="${innet.industry}"></span></td>
+</tr>
+</tbody>
+<tr id="last">
+<td colspan="8"><a th:href="@{/admin/{id}(id=${list})}" id="remove" class="btn btn-danger">Remove Records</a></td>
+</tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+</table>
+</form>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$.ajax({
+		  type:"GET",
+		  url:"/admin/fetch/all/users",
+		  success:function(data){
+			  //console.log(data.length);
+			  $.each(data,function(i,user){
+				  $('#user').append("<option>"+user+"</option>");
+				  $('#userr').append("<option>"+user+"</option>");
+			  });
+		  },
+		  error:function(err)
+		  {
+			  
+		  }
+	});
+});
+
+</script>
+</body>
+</html>

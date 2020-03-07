@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="fragments.html :: headerfiles"></head>
+<head>
+<meta charset="UTF-8">
+<title>Error Page</title>
+<style type="text/css">
+h1{color:red;margin-left:39%;margin-top: 210px;}
+button{color:white;background-color:#007cff;border:1px solid white;height:47px;width:214px;margin-left:41%;
+       border-radius:5px;font-size:20px;}
+</style>
+</head>
+<body>
+<div th:if="${error}">
+<h1 th:text="${error}"></h1>
+</div>
+<button OnClick="goBack()">Go Back</button>
+
+<script>
+function goBack() {
+  window.history.back();
+}
+</script>
+</body>
+</html>

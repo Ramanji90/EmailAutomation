@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:insert="fragments.html :: headerfiles"></head>
+<head>
+<style type="text/css">
+table {border-collapse: collapse;}
+table, th,td{border: 1px solid black;}
+table{width:100%;}
+th{width:px;height:50px;background-color:#cdcdcd;text-align:center;}
+td{background-color:#ededed;padding:3px;height:px;text-align:left;}
+#row input[type="text"]{margin:-1px;width:px;}
+ul li{text-decoration:none; list-style-type:none;display:inline;padding-left:85px;}
+#top{height:50px;background-color:#11d00a;width:100%;color:white;padding-top:13px;}
+#top li a{color:white;}
+body{margin:0px;padding:0px;}
+</style>
+<script src="/js/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+<header th:insert="fragments.html :: nav"></header>
+ 
+<div id="top" class="">
+       <ul class="">
+              <li><a href="">My Skipped Records</a></li>
+              <li><a href="">View My Records</a></li>
+              <li><a href="">View My Report</a></li>
+             <li>Total Records(<strong><span id="count"></span></strong>)</li>
+             <li>User  :</li>
+             <li sec:authentication="name"></li>
+             
+   </ul>
+   <span></span>
+</div>
+
+<form id="form1"  name="form1"   class="my-2">
+<table >
+<thead>
+<tr>
+<th>Date</th>
+<th>Company<br><input type="text" id="domain"></th>
+<th>Contact Name<br><select id="select"><option value="">Name Pattern</option>
+<option value="FN.LN">FN.LN</option><option value="FNFC.LN">FNFC.LN</option>
+<option value="FNFC  LN">FNFC  LN</option><option value="LNFC  FN">LNFC  FN</option>
+<option value="FN">FN</option><option value="LN">LN</option>
+<option value="LN.FN">LN.FN</option><option value="LNFC_FN">LNFC_FN</option>
+<option value="LN_FN">LN_FN</option><option value="FN_LN">FN_LN</option>
+<option value="FNFC_LN">FNFC_LN</option>
+<option value="FN LN">FN LN</option>
+<option value="LN FN">LN FN</option>
+</select>
+</th>
+<th>Email Id</th>
+<th>Validation</th>
+<th>Designation</th>
+<th>Location</th>
+<th>Industry</th>
+<th>Option</th>
+</tr>
+</thead>
+<tbody>
+<tr id="row" >
+<td hidden="true"><input type="text" id="id"></td>
+<td hidden="true"><input type="text" id="file"></td>
+<td hidden="true"><input type="text" id="createdby"></td>
+<td hidden="true"><input type="text" id="course"></td>
+<td><input type="text"  id="date"></td>
+<td><input type="text" id="company"></td>
+<td><input type="text" id="contact" required="required"></td>
+<td><input type="text" id="email"></td>
+<td><input type="text" id="validation"></td>
+<td><input type="text" id="designation"></td>
+<td><input type="text" id="location"></td>
+<td><input type="text" id="industry"></td>
+<td><input type="submit" id="submit" value="Next"></td>
+</tr>
+</tbody>
+</table>
+</form>
+<div id="content"></div>
+
+<script type="text/javascript">
+var array=[];
+$("document").ready(function()
+{  
+	$.ajax({
+		  type:"GET",
+		  url:"/leadgen/fetchcreation/Shreya",
+		  success:function(records){
+			 // console.log(data.length);
+			 array=records;
+			  $.each(records,function(i,item){
+				  if(i<5)
+					  {
+					  $('#row').before("<tr id='item'><td id='id' hidden='hidden'>"+item.id+"</td><td id='course' hidden='hidden'>"
+							  +item.course+"</td><td id='file' hidden='hidden'>"+item.fileName+"</td><td id='createdby' hidden='hidden'>"+item.createdBy+"</td><td id='date' style='text-align:center'>"
+							  +item.date+"</td><td id='company' style='text-align:center'>"
+							  +item.company+"</td><td id='contact' style='text-align:center'>"+item.contactName+"</td><td id='email' style='text-align:center'>"
+							  +''+"</td><td id='validation' style='text-align:center'>"+''+"</td><td id='designation' style='text-align:center'>"
+							  +item.designation+"</td><td id='location' style='text-align:center'>"+item.location+"</td><td id='industry' style='text-align:center'>"
+							  +item.industry+"</td><td id='option'>"+''+"</td></tr>");
+					      array.shift();
+					  }
+				 
+				  var com=$('#company').text();
+				  $('table tr').find('input[type="text"]#id').val($('#id').text());
+				  $('table tr').find('input[type="text"]#file').val($('#file').text());
+				  $('table tr').find('input[type="text"]#createdby').val($('#createdby').text());
+				  $('table tr').find('input[type="text"]#course').val($('#course').text());
+				  $('table tr').find('input[type="text"]#date').replaceWith("<a href=https://www.google.com/search?q="+com+ "id='search' >Search</a>");
+				  $('table tr').find('input[type="text"]#company').val($('#company').text());
+				  $('table tr').find('input[type="text"]#contact').val($('#contact').text());
+				  $('table tr').find('input[type="text"]#email').val('');
+				  $('table tr').find('input[type="text"]#validation').val('');
+				  $('table tr').find('input[type="text"]#designation').val($('#designation').text());
+				  $('table tr').find('input[type="text"]#location').val($('#location').text());
+				  $('table tr').find('input[type="text"]#industry').val($('#industry').text());
+				  
+				  var rows=$('table tr').length;
+				  $("#count").text(array.length+rows-2);
+				  
+				 
+			  });
+		  },
+		  error:function(err)
+		  {
+			  
+		  }
+	});
+
+
+var createdRows=0;
+$("#form1").submit(function(event){
+    
+	event.preventDefault();
+	   
+        
+var id=$('input[type="text"]#id').val();
+var file=$('input[type="text"]#file').val();
+var createdby=$('input[type="text"]#createdby').val();
+var course=$('input[type="text"]#course').val();
+var date=$('table tr').find('input[type="text"]#date').val($('#date').text());
+var company=$('input[type="text"]#company').val();
+var email=$('input[type="text"]#email').val();
+var contact=$('input[type="text"]#contact').val();
+var validation=$('input[type="text"]#validation').val();
+var designation=$('input[type="text"]#designation').val();
+var location=$('input[type="text"]#location').val();
+var industry=$('input[type="text"]#industry').val();
+
+var dto={id:id,company:company,contactName:contact,email:email,validation:validation,designation:designation,
+		course:course,createdBy:createdby,location:location,industry:industry,fileName:file};
+		var json=JSON.stringify(dto);
+		alert(json);
+$.ajax({
+	  type:"POST",
+	 url:"/leadgen/insert/email",
+	  data:json,
+	  contentType:"application/json",
+	  dataType:"json",
+	  success:function(data){
+		 if(data!=null)
+			 {
+			   alert("Record Updated");
+			   $('#item').remove();
+			   $('#row').after("<tr><td>"+data.date+"</td><td>"+data.company+"</td><td>"+data.contactName+"</td><td>"+data.email+"</td><td>"
+					   +data.validation+"</td><td>"+data.designation+"</td><td>"+data.location+"</td><td>"
+					   +data.industry+"</td><td><input type='submit' value='Edit'></td></tr>");
+			   
+			   
+			   var rows=$('table tr').length;
+
+			   $("#count").text((array.length+rows-2)-(++createdRows));
+
+
+			   $.each(array,function(i,item){
+			   	  if(i<1)
+			   		  {
+			   		  $('#row').before("<tr id='item'><td id='id' hidden='hidden'>"+item.id+"</td><td id='date' style='text-align:center'>"+item.date+"</td><td id='company' style='text-align:center'>"
+			   				  +item.company+"</td><td id='contact' style='text-align:center'>"+item.contactName+"</td><td id='email' style='text-align:center'>"
+			   				  +''+"</td><td id='validation' style='text-align:center'>"+''+"</td><td id='designation' style='text-align:center'>"
+			   				  +item.designation+"</td><td id='location' style='text-align:center'>"+item.location+"</td><td id='industry' style='text-align:center'>"
+			   				  +item.industry+"</td><td id='option'>"+''+"</td></tr>"); 
+			   		  array.shift();
+			   		  }
+			   });
+
+
+
+
+			   alert($('#company').text());
+			   $('table tr').find('input[type="text"]#id').val($('#id').text());
+			   $('#search').replaceWith("<a href=https://www.google.com/search?q="+$('#company').text()+">Search</a>");
+			   $('table tr').find('input[type="text"]#company').val($('#company').text());
+			   $('table tr').find('input[type="text"]#contact').val($('#contact').text());
+			   format=$("#select").val();
+			   var domain=$('input[type="text"]#domain').val();
+
+			     switch(format)
+			   { 
+			      case "FN.LN":  
+			                                        var string=$("table tr").find('input[type="text"]#contact').val();
+			   		var arr=string.split(" ");
+			   		$("table tr" ).find('input[type="text"]#email').val(arr[0]+"."+arr[arr.length-1]+domain);
+			                                        break;
+
+			    case "FN_LN":  
+			                                        var string=$("table tr").find('input[type="text"]#contact').val();
+			   		var arr=string.split(" ");
+			   		$("table tr" ).find('input[type="text"]#email').val(arr[0]+"_"+arr[arr.length-1]+domain);
+			                                        break;
+
+			    case "FNFC_LN":  
+			                                        var string=$("table tr" ).find('input[type="text"]#contact').val();
+			   		var arr=string.split(" ");
+			   		$("table tr" ).find('input[type="text"]#email').val(arr[0].charAt(0)+"_"+arr[arr.length-1]+domain);
+			                                        break;
+
+			   case "FNFC  LN":
+			    		var string=$("table tr").find('input[type="text"]#contact').val();
+			   		var arr=string.split(" ");
+			   		$("table tr" ).find('input[type="text"]#email').val(arr[0].charAt(0)+arr[arr.length-1]+domain);
+			                                        break;
+
+			   case "FNFC.LN":
+			    		var string=$("table tr" ).find('input[type="text"]#contact').val();
+			   		var arr=string.split(" ");
+			   		$("table tr" ).find('input[type="text"]#email').val(arr[0].charAt(0)+"."+arr[arr.length-1]+domain);
+			                                        break;
+
+			   case "LNFC  FN":
+			    		var string=$("table tr" ).find('input[type="text"]#contact').val();
+			   		var arr=string.split(" ");
+			   		$("table tr" ).find('input[type="text"]#email').val(arr[arr.length-1].charAt(0)+arr[0]+domain);
+			                                        break;
+
+			   case "FN":
+			    		var string=$("table tr" ).find('input[type="text"]#contact').val();
+			   		var arr=string.split(" ");
+			   		$("table tr" ).find('input[type="text"]#email').val(arr[0]+domain);
+			                                        break;
+
+			   case "LN":
+			    		var string=$("table tr" ).find('input[type="text"]#contact').val();
+			   		var arr=string.split(" ");
+			   		$("table tr" ).find('input[type="text"]#email').val(arr[arr.length-1]+domain);
+			                                        break;
+
+
+			   case "LN.FN":
+			    		var string=$("table tr" ).find('input[type="text"]#contact').val();
+			   		var arr=string.split(" ");
+			   		$("table tr" ).find('input[type="text"]#email').val(arr[arr.length-1]+"."+arr[0]+domain);
+			                                        break;
+
+			   case "LN_FN":
+			    		var string=$("table tr" ).find('input[type="text"]#contact').val();
+			   		var arr=string.split(" ");
+			   		$("table tr" ).find('input[type="text"]#email').val(arr[arr.length-1]+"_"+arr[0]+domain);
+			                                        break;
+
+			   case "LNFC_FN":
+			    		var string=$("table tr" ).find('input[type="text"]#contact').val();
+			   		var arr=string.split(" ");
+			   		$("table tr" ).find('input[type="text"]#email').val(arr[arr.length-1].charAt(0)+"_"+arr[0]+domain);
+			                                        break;
+
+			   default:
+
+			   }
+
+
+			   //$('table tr').find('input[type="text"]#validation').val('');
+			   $('table tr').find('input[type="text"]#designation').val($('#designation').text());
+			   $('table tr').find('input[type="text"]#location').val($('#location').text());
+			   $('table tr').find('input[type="text"]#industry').val($('#industry').text());
+
+			    
+			 }
+		  
+	  },
+	  error:function(err)
+	  {
+		  alert(err.responseJSON.message);
+	  }
+});
+
+
+
+
+});
+
+
+
+});
+
+
+</script>
+</body>
+</html>
